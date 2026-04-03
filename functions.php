@@ -1,6 +1,7 @@
 <?php
 /**
  * Kusina Theme Functions and Definitions
+ * Developed by Aditya Raj
  */
 
 function kusina_setup() {

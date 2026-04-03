@@ -2,7 +2,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12 text-center">
-            <p>&copy; <?php echo date('Y'); ?> <?php bloginfo( 'name' ); ?>. All rights reserved.</p>
+            <p>&copy; <?php echo date('Y'); ?> <?php bloginfo( 'name' ); ?>. All rights reserved. | Theme by Aditya Raj</p>
           </div>
         </div>
       </div>
