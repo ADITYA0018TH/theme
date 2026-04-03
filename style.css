@@ -1,0 +1,340 @@
+/*
+Theme Name: Kusina - Table Ordering
+Theme URI: https://colorlib.com/wp/template/kusina/
+Author: Colorlib & Antigravity
+Author URI: https://colorlib.com/
+Description: A simplified WordPress theme for table-side ordering.
+Version: 1.0.0
+License: PHP
+License URI: license.php
+Text Domain: kusina-ordering
+*/
+
+/* Reset & Base Styles */
+body {
+    overflow-x: hidden;
+}
+
+/* Side Drawer Cart Styles */
+#side-cart {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100%;
+    background: #fff;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+    z-index: 9999;
+    transition: 0.3s ease-in-out;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+#side-cart.open {
+    right: 0;
+}
+
+#side-cart .cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+#side-cart .cart-items {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+#side-cart .cart-footer {
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+#side-cart .cart-item {
+    display: flex;
+    margin-bottom: 15px;
+    align-items: center;
+}
+
+#side-cart .cart-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+#side-cart .cart-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 9998;
+    display: none;
+}
+
+#side-cart.open + .cart-overlay {
+    display: block;
+}
+
+.add-to-cart-btn {
+    cursor: pointer;
+    background: #f96d00;
+    color: #fff;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.add-to-cart-btn:hover {
+    background: #e06200;
+}
+
+@media (max-width: 576px) {
+    #side-cart {
+        width: 100%;
+        right: -100%;
+    }
+}
+
+/* ==========================================================================
+   StitchMCP 'Digital Concierge' Design Refinement
+   ========================================================================== */
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@700;800&family=Manrope:wght@400;500;600&display=swap');
+
+:root {
+    --primary: #9e4300;
+    --primary-container: #f96d00;
+    --on-primary: #ffffff;
+    --surface: #f9f9f9;
+    --surface-container: #eeeeee;
+    --on-surface: #1a1c1c;
+    --outline: rgba(225, 192, 176, 0.4);
+    --radius-lg: 12px;
+}
+
+body {
+    background-color: var(--surface) !important;
+    font-family: 'Manrope', sans-serif !important;
+    color: var(--on-surface) !important;
+}
+
+h1, h2, h3, h4, .navbar-brand {
+    font-family: 'Epilogue', sans-serif !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.02em !important;
+}
+
+.woocommerce-checkout {
+    max-width: 600px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(26, 28, 28, 0.04);
+}
+
+body.woocommerce-order-received .woocommerce,
+body.woocommerce-order-received .woocommerce-order {
+    width: 80%;
+    max-width: 80%;
+    margin: 40px auto;
+    float: none;
+}
+
+body.woocommerce-order-received .woocommerce-order-details,
+body.woocommerce-order-received .woocommerce-customer-details {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Force ALL WooCommerce containers to be 100% width */
+.woocommerce-checkout .col2-set,
+.woocommerce-checkout .col-1,
+.woocommerce-checkout .col-2,
+.woocommerce-checkout .woocommerce-billing-fields,
+.woocommerce-checkout .woocommerce-billing-fields__field-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    float: none !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Hide Redundant Headings */
+.woocommerce-billing-fields h3,
+.woocommerce-additional-fields h3,
+#order_review_heading {
+    display: none !important;
+}
+
+/* Form Wells - Full Width */
+.woocommerce-checkout .form-row {
+    width: 100% !important;
+    margin-bottom: 25px !important;
+    float: none !important;
+    display: block !important;
+    clear: both !important;
+}
+
+.woocommerce-checkout input.input-text,
+.woocommerce-checkout select,
+.woocommerce-checkout textarea {
+    width: 100% !important;
+    background: #ffffff !important;
+    border: 1px solid var(--outline) !important;
+    border-radius: var(--radius-lg) !important;
+    padding: 18px 24px !important;
+    font-size: 16px !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    display: block !important;
+}
+
+.woocommerce-checkout label {
+    display: block;
+    font-family: 'Manrope', sans-serif !important;
+    font-weight: 700 !important;
+    margin-bottom: 10px !important;
+    color: var(--on-surface) !important;
+    font-size: 15px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Specific prominence for Table Number */
+.woocommerce-checkout .form-row-wide[id*="table_number"] label {
+    font-size: 18px !important;
+    color: var(--primary-container) !important;
+}
+
+.woocommerce-checkout input.input-text:focus {
+    border-color: var(--primary-container) !important;
+    box-shadow: 0 0 0 4px rgba(249, 109, 0, 0.08) !important;
+}
+
+/* Primary CTA - Vitreous Glow Gradient */
+#place_order {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-container) 100%) !important;
+    border-radius: var(--radius-lg) !important;
+    padding: 22px !important;
+    box-shadow: 0 10px 25px rgba(158, 67, 0, 0.25) !important;
+    border: none !important;
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+#place_order:hover {
+    transform: translateY(-3px) scale(1.01) !important;
+    box-shadow: 0 15px 30px rgba(158, 67, 0, 0.35) !important;
+}
+
+/* Navbar Sophistication */
+.ftco_navbar {
+    background: transparent !important;
+    padding: 15px 0 !important;
+}
+
+.navbar-brand {
+    color: #fff !important;
+    font-size: 26px !important;
+    letter-spacing: -1px !important;
+}
+
+.nav-link {
+    font-family: 'Manrope', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Order Summary Polished */
+.woocommerce-checkout-review-order-table {
+    background: #fff !important;
+    margin-top: 40px !important;
+}
+
+.woocommerce-checkout-review-order-table th, 
+.woocommerce-checkout-review-order-table td {
+    border-bottom: 1px solid #f3f3f3 !important;
+    padding: 20px !important;
+}
+
+.order-total {
+    color: var(--primary-container) !important;
+}
+
+/* Breadcrumbs High Contrast */
+.hero-wrap .bread {
+    font-family: 'Epilogue', sans-serif !important;
+    font-weight: 800 !important;
+}
+
+.menu-category-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 auto 32px;
+    overflow-x: auto;
+    padding: 4px 0 10px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.menu-category-tabs::-webkit-scrollbar {
+    height: 0;
+}
+
+.menu-category-tabs .nav-item {
+    flex: 0 0 auto;
+}
+
+.menu-category-tabs .nav-link {
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: #f4f4f4;
+    color: var(--on-surface) !important;
+    font-family: 'Manrope', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+    padding: 10px 20px !important;
+    text-transform: none !important;
+    transition: 0.25s ease;
+    white-space: nowrap;
+}
+
+.menu-category-tabs .nav-link:hover,
+.menu-category-tabs .nav-link:focus {
+    border-color: rgba(249, 109, 0, 0.18);
+    background: #fff;
+    color: var(--primary-container) !important;
+}
+
+.menu-category-tabs .nav-link.active {
+    background: var(--primary-container) !important;
+    color: var(--on-primary) !important;
+    box-shadow: 0 12px 24px rgba(249, 109, 0, 0.18);
+}
+
+.menu-category-content {
+    margin-top: 12px;
+}
+
+.menu-category-content .tab-pane {
+    outline: none;
+}
+
+@media (max-width: 576px) {
+    .menu-category-tabs {
+        justify-content: flex-start;
+    }
+}
