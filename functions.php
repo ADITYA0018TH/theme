@@ -48,6 +48,9 @@ function kusina_scripts() {
     wp_enqueue_script( 'kusina-main', get_template_directory_uri() . '/js/main.js', array('jquery'), null, true );
     wp_enqueue_script( 'kusina-cart', get_template_directory_uri() . '/js/cart.js', array('jquery'), null, true );
 
+    // Enqueue Tailwind Play CDN
+    wp_enqueue_script( 'tailwind-cdn', 'https://cdn.tailwindcss.com', array(), null, false );
+
     // Localize cart script
     wp_localize_script( 'kusina-cart', 'kusinaData', array(
         'ajax_url' => admin_url( 'admin-ajax.php' ),
@@ -56,6 +59,46 @@ function kusina_scripts() {
     ) );
 }
 add_action( 'wp_enqueue_scripts', 'kusina_scripts' );
+
+/**
+ * Add Tailwind configuration to the head for the 'The Crimson Vine' design system.
+ */
+function kusina_tailwind_config() {
+    ?>
+    <script>
+      tailwind.config = {
+        theme: {
+          container: {
+            center: true,
+            padding: '1rem',
+          },
+          extend: {
+            colors: {
+              'primary': '#f96d00',
+              'primary-dark': '#e06200',
+              'onyx': '#000000',
+              'bone': '#fafafa',
+              'clay': '#e1e1e1',
+            },
+            fontFamily: {
+              'sans': ['Manrope', 'Poppins', 'sans-serif'],
+              'heading': ['Epilogue', 'Poppins', 'sans-serif'],
+            },
+            borderRadius: {
+              'xl': '12px',
+              '2xl': '16px',
+            },
+            boxShadow: {
+              'premium': '0 10px 30px rgba(0, 0, 0, 0.08)',
+              'glow': '0 10px 25px rgba(249, 109, 0, 0.25)',
+            }
+          }
+        }
+      }
+    </script>
+    <?php
+}
+add_action( 'wp_head', 'kusina_tailwind_config' );
 
 /**
  * Remove the coupon prompt from the checkout page.
@@ -148,13 +191,32 @@ function kusina_display_admin_order_meta($order){
 }
 
 /**
+ * Get the current cart quantity for a product.
+ */
+function kusina_get_product_cart_quantity( $product_id ) {
+    if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+        return 0;
+    }
+
+    $quantity = 0;
+
+    foreach ( WC()->cart->get_cart() as $cart_item ) {
+        if ( (int) $cart_item['product_id'] === (int) $product_id ) {
+            $quantity += (int) $cart_item['quantity'];
+        }
+    }
+
+    return $quantity;
+}
+
+/**
  * AJAX Handler for Custom Add to Cart
  */
 add_action( 'wp_ajax_kusina_add_to_cart', 'kusina_ajax_add_to_cart_handler' );
 add_action( 'wp_ajax_nopriv_kusina_add_to_cart', 'kusina_ajax_add_to_cart_handler' );
 function kusina_ajax_add_to_cart_handler() {
     $product_id = apply_filters( 'woocommerce_add_to_cart_product_id', absint( $_POST['product_id'] ) );
-    $quantity = 1;
+    $quantity = isset( $_POST['quantity'] ) ? max( 1, absint( $_POST['quantity'] ) ) : 1;
     $passed_validation = apply_filters( 'woocommerce_add_to_cart_validation', true, $product_id, $quantity );
 
     if ( $passed_validation && WC()->cart->add_to_cart( $product_id, $quantity ) ) {
@@ -170,6 +232,49 @@ function kusina_ajax_add_to_cart_handler() {
 }
 
 /**
+ * Update product quantity in the cart via AJAX.
+ */
+add_action( 'wp_ajax_kusina_update_cart_quantity', 'kusina_update_cart_quantity_handler' );
+add_action( 'wp_ajax_nopriv_kusina_update_cart_quantity', 'kusina_update_cart_quantity_handler' );
+function kusina_update_cart_quantity_handler() {
+    $product_id = absint( $_POST['product_id'] );
+    $delta = isset( $_POST['delta'] ) ? intval( $_POST['delta'] ) : 0;
+
+    if ( ! $product_id || 0 === $delta ) {
+        wp_send_json_error();
+    }
+
+    foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+        if ( (int) $cart_item['product_id'] !== $product_id ) {
+            continue;
+        }
+
+        $current_quantity = (int) $cart_item['quantity'];
+        $new_quantity = $current_quantity + $delta;
+
+        if ( $new_quantity <= 0 ) {
+            WC()->cart->remove_cart_item( $cart_item_key );
+        } else {
+            WC()->cart->set_quantity( $cart_item_key, $new_quantity, true );
+        }
+
+        wp_send_json_success( array(
+            'quantity' => max( 0, $new_quantity ),
+        ) );
+    }
+
+    if ( $delta > 0 ) {
+        if ( WC()->cart->add_to_cart( $product_id, $delta ) ) {
+            wp_send_json_success( array(
+                'quantity' => $delta,
+            ) );
+        }
+    }
+
+    wp_send_json_error();
+}
+
+/**
  * Get Cart Contents via AJAX
  */
 add_action( 'wp_ajax_get_cart_contents', 'kusina_get_cart_contents' );
@@ -181,6 +286,7 @@ function kusina_get_cart_contents() {
         $_product = apply_filters( 'woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key );
         $product_id = apply_filters( 'woocommerce_cart_item_product_id', $cart_item['product_id'], $cart_item, $cart_item_key );
         $items[] = array(
+            'product_id' => $product_id,
             'key'      => $cart_item_key,
             'name'     => $_product->get_name(),
             'price'    => $_product->get_price(),

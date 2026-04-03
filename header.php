@@ -8,7 +8,7 @@
   <body <?php body_class(); ?>>
     
 	  <nav class="navbar navbar-expand-lg ftco_navbar bg-transparent ftco-navbar-light" id="ftco-navbar">
-	    <div class="container">
+	    <div class="container mx-auto">
 	      <a class="navbar-brand" href="<?php echo esc_url( home_url( '/menu' ) ); ?>"><?php bloginfo( 'name' ); ?></a>
 	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
 	        <span class="oi oi-menu"></span> Menu
@@ -18,7 +18,7 @@
 	        <ul class="navbar-nav ml-auto">
 	        	<li class="nav-item"><a href="<?php echo esc_url( home_url( '/menu' ) ); ?>" class="nav-link">Menu</a></li>
 	        	<li class="nav-item">
-                    <a href="#" class="nav-link" id="cart-trigger">
+                    <a href="/cart" class="nav-link" id="cart-trigger">
                         <span class="icon-shopping-cart"></span> 
                         Cart (<span class="cart-count">0</span>)
                     </a>

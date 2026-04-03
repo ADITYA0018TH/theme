@@ -10,7 +10,7 @@ get_header(); ?>
       <div class="container">
         <div class="row no-gutters slider-text align-items-center justify-content-center">
           <div class="col-md-9 ftco-animate text-center">
-            <h1 class="mb-2 bread">Our Menu</h1>
+            <h1 class="mb-0 bread text-3xl md:text-5xl">Our Menu</h1>
           </div>
         </div>
       </div>
@@ -84,6 +84,7 @@ get_header(); ?>
                                         <?php while ( $products->have_posts() ) : $products->the_post();
                                             global $product;
                                             $image_url = get_the_post_thumbnail_url( get_the_ID(), 'medium' );
+                                            $cart_quantity = function_exists( 'kusina_get_product_cart_quantity' ) ? kusina_get_product_cart_quantity( get_the_ID() ) : 0;
                                             ?>
                                             <div class="menus d-flex ftco-animate">
                                                 <div class="menu-img img" style="background-image: url(<?php echo esc_url( $image_url ); ?>);"></div>
@@ -97,13 +98,16 @@ get_header(); ?>
                                                         </div>
                                                     </div>
                                                     <p><?php the_excerpt(); ?></p>
-                                                    <button class="add-to-cart-btn mt-2"
-                                                            data-product-id="<?php the_ID(); ?>"
-                                                            data-name="<?php the_title(); ?>"
-                                                            data-price="<?php echo esc_attr( $product->get_price() ); ?>"
-                                                            data-image="<?php echo esc_url( get_the_post_thumbnail_url( get_the_ID(), 'thumbnail' ) ); ?>">
-                                                        Add to Cart
-                                                    </button>
+                                                    <div class="menu-quantity-stepper"
+                                                         data-product-id="<?php the_ID(); ?>"
+                                                         data-name="<?php the_title(); ?>"
+                                                         data-price="<?php echo esc_attr( $product->get_price() ); ?>"
+                                                         data-image="<?php echo esc_url( get_the_post_thumbnail_url( get_the_ID(), 'thumbnail' ) ); ?>"
+                                                         data-quantity="<?php echo esc_attr( $cart_quantity ); ?>">
+                                                        <button type="button" class="menu-qty-btn menu-qty-decrease" aria-label="Decrease quantity">−</button>
+                                                        <span class="menu-qty-value"><?php echo esc_html( $cart_quantity ); ?></span>
+                                                        <button type="button" class="menu-qty-btn menu-qty-increase" aria-label="Increase quantity">+</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         <?php endwhile; wp_reset_postdata(); ?>

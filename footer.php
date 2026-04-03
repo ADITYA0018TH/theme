@@ -23,7 +23,7 @@
                 <strong>Total:</strong>
                 <strong class="cart-total">$0.00</strong>
             </div>
-            <a href="<?php echo esc_url( home_url( '/checkout' ) ); ?>" class="btn btn-primary btn-block py-3">Proceed to Checkout</a>
+            <a href="<?php echo esc_url( home_url( '/checkout' ) ); ?>" class="btn btn-primary btn-block py-3 rounded-2xl shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl" style="background-color: #ff7700; border-color: #ff7700; hover: background-color: #ffffffff; hover: border-color: #ff7700; color: #fff; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Proceed to Checkout</a>
         </div>
     </div>
     <div class="cart-overlay"></div>

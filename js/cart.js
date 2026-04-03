@@ -1,26 +1,87 @@
 jQuery(document).ready(function($) {
-    
-    // Add to cart using WooCommerce AJAX
-    $(document).on('click', '.add-to-cart-btn', function() {
-        const productId = $(this).data('product-id');
-        const $btn = $(this);
+    function openCartDrawer() {
+        $('#side-cart').addClass('open');
+        $('.cart-overlay').fadeIn();
+    }
 
-        $btn.text('Adding...');
+    function setStepperQuantity($stepper, quantity) {
+        $stepper.attr('data-quantity', quantity);
+        $stepper.find('.menu-qty-value').text(quantity);
+        $stepper.find('.menu-qty-decrease').prop('disabled', quantity <= 0);
+    }
+
+    function syncStepperState() {
+        $('.menu-quantity-stepper').each(function() {
+            const $stepper = $(this);
+            const quantity = parseInt($stepper.attr('data-quantity'), 10) || 0;
+            setStepperQuantity($stepper, quantity);
+        });
+    }
+
+    // Increment quantity using WooCommerce AJAX
+    $(document).on('click', '.menu-qty-increase', function() {
+        const $stepper = $(this).closest('.menu-quantity-stepper');
+        const productId = $stepper.data('product-id');
+        const currentQuantity = parseInt($stepper.attr('data-quantity'), 10) || 0;
+
+        $stepper.addClass('is-loading');
 
         $.ajax({
             type: 'POST',
             url: kusinaData.ajax_url,
             data: {
-                action: 'kusina_add_to_cart',
-                product_id: productId
+                action: 'kusina_update_cart_quantity',
+                product_id: productId,
+                delta: 1
             },
             success: function(response) {
-                $btn.text('Add to Cart');
-                if (response.fragments) {
-                    updateCartUIFromFragments(response.fragments);
-                    $('#side-cart').addClass('open');
-                    $('.cart-overlay').fadeIn();
+                if (response.success) {
+                    const nextQuantity = response.data && typeof response.data.quantity !== 'undefined'
+                        ? parseInt(response.data.quantity, 10) || 0
+                        : currentQuantity + 1;
+                    setStepperQuantity($stepper, nextQuantity);
+                    fetchCartState();
+                    openCartDrawer();
                 }
+            },
+            complete: function() {
+                $stepper.removeClass('is-loading');
+            }
+        });
+    });
+
+    // Decrement quantity using WooCommerce AJAX
+    $(document).on('click', '.menu-qty-decrease', function() {
+        const $stepper = $(this).closest('.menu-quantity-stepper');
+        const productId = $stepper.data('product-id');
+        const currentQuantity = parseInt($stepper.attr('data-quantity'), 10) || 0;
+
+        if (currentQuantity <= 0) {
+            return;
+        }
+
+        $stepper.addClass('is-loading');
+
+        $.ajax({
+            type: 'POST',
+            url: kusinaData.ajax_url,
+            data: {
+                action: 'kusina_update_cart_quantity',
+                product_id: productId,
+                delta: -1
+            },
+            success: function(response) {
+                if (response.success) {
+                    const nextQuantity = response.data && typeof response.data.quantity !== 'undefined'
+                        ? parseInt(response.data.quantity, 10) || 0
+                        : Math.max(0, currentQuantity - 1);
+                    setStepperQuantity($stepper, nextQuantity);
+                    fetchCartState();
+                    openCartDrawer();
+                }
+            },
+            complete: function() {
+                $stepper.removeClass('is-loading');
             }
         });
     });
@@ -83,13 +144,19 @@ jQuery(document).ready(function($) {
         $cartCount.text(count);
         const totalNum = parseFloat(total) || 0;
         $cartTotal.text('₹' + totalNum.toFixed(2));
+
+        $('.menu-quantity-stepper').each(function() {
+            const $stepper = $(this);
+            const productId = parseInt($stepper.data('product-id'), 10);
+            const item = items.find((cartItem) => parseInt(cartItem.product_id, 10) === productId);
+            setStepperQuantity($stepper, item ? item.quantity : 0);
+        });
     }
 
     // Toggle Cart Drawer
     $('#cart-trigger').on('click', function(e) {
         e.preventDefault();
-        $('#side-cart').addClass('open');
-        $('.cart-overlay').fadeIn();
+        openCartDrawer();
         fetchCartState(); // Refresh cart on open
     });
 
@@ -111,10 +178,12 @@ jQuery(document).ready(function($) {
             },
             success: function() {
                 fetchCartState();
+                openCartDrawer();
             }
         });
     });
 
     // Initial Load
+    syncStepperState();
     fetchCartState();
 });

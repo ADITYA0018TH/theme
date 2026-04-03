@@ -13,6 +13,8 @@ Text Domain: kusina-ordering
 /* Reset & Base Styles */
 body {
     overflow-x: hidden;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
 }
 
 /* Side Drawer Cart Styles */
@@ -134,12 +136,7 @@ h1, h2, h3, h4, .navbar-brand {
 }
 
 .woocommerce-checkout {
-    max-width: 600px;
     margin: 40px auto;
-    background: #fff;
-    padding: 40px;
-    border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(26, 28, 28, 0.04);
 }
 
 body.woocommerce-order-received .woocommerce,
@@ -237,15 +234,26 @@ body.woocommerce-order-received .woocommerce-customer-details {
 }
 
 /* Navbar Sophistication */
-.ftco_navbar {
+.ftco_navbar, 
+.navbar,
+.ftco-navbar-light,
+#ftco-navbar {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
     background: transparent !important;
+    background-color: transparent !important;
     padding: 15px 0 !important;
+    z-index: 100 !important;
 }
 
 .navbar-brand {
-    color: #fff !important;
+    color: #ffffff !important;
+    margin-top: 2rem !important;
     font-size: 26px !important;
     letter-spacing: -1px !important;
+    background-color: transparent !important;
 }
 
 .nav-link {
@@ -254,6 +262,7 @@ body.woocommerce-order-received .woocommerce-customer-details {
     font-size: 14px !important;
     text-transform: uppercase;
     letter-spacing: 1px;
+    color: #ff7700 !important;
 }
 
 /* Order Summary Polished */
@@ -333,8 +342,98 @@ body.woocommerce-order-received .woocommerce-customer-details {
     outline: none;
 }
 
+.menu-quantity-stepper {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+    padding: 2px 0;
+}
+
+.menu-qty-btn {
+    width: 48px;
+    height: 48px;
+    border: 0;
+    border-radius: 50%;
+    font-size: 28px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+}
+
+.menu-qty-decrease {
+    background: #f4f5f7;
+    color: #1a1c1c;
+}
+
+.menu-qty-increase {
+    background: var(--primary-container);
+    color: var(--on-primary);
+    box-shadow: 0 12px 24px rgba(249, 109, 0, 0.2);
+}
+
+.menu-qty-btn:hover {
+    transform: translateY(-1px);
+}
+
+.menu-qty-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.menu-qty-value {
+    min-width: 20px;
+    text-align: center;
+    font-family: 'Epilogue', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: #1a1c1c;
+}
+
+.menu-quantity-stepper.is-loading {
+    opacity: 0.75;
+    pointer-events: none;
+}
+
 @media (max-width: 576px) {
     .menu-category-tabs {
         justify-content: flex-start;
     }
+
+    .menu-quantity-stepper {
+        gap: 10px;
+    }
+
+    .menu-qty-btn {
+        width: 42px;
+        height: 42px;
+        font-size: 24px;
+    }
+
+    .menu-qty-value {
+        font-size: 20px;
+    }
+}
+
+/* Fallback for Hero Section Visibility */
+.hero-wrap.hero-wrap-2 {
+    height: 300px !important;
+    position: relative !important;
+    background-size: cover !important;
+    background-position: center center !important;
+}
+
+.hero-wrap.hero-wrap-2 .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    content: '';
+    opacity: .5;
+    background: #000000;
 }
